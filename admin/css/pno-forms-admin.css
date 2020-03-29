@@ -1,0 +1,62 @@
+.pno-panel {
+  position: relative;
+  min-width: 255px;
+  border: 1px solid #ccd0d4;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  background: #fff;
+}
+
+.pno-panel h2 {
+  padding: 8px 12px;
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.pno-panel__content {
+  padding: 8px 12px;
+}
+
+.pno-panel + .pno-panel {
+  margin-top: 8px;
+}
+
+.pno-panel .row-actions {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.pno-panel label {
+  display: block;
+}
+
+.pno-panel label span {
+  margin-bottom: 5px;
+  line-height: 1.3;
+  font-weight: 600;
+  display: block;
+}
+
+.pno-panel label + label {
+  margin-top: 12px;
+}
+
+.pno-panel input {
+  width: 100%;
+}
+
+.pno-well {
+  margin-top: 12px;
+  padding: 8px;
+  position: relative;
+  min-width: 255px;
+  border: 1px solid #ccd0d4;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  background: #f1f1f1;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 600;
+}
+
+.pno-panel textarea {
+  width: 100%;
+}
