@@ -1,0 +1,12 @@
+{
+    "name": "pno/pno-forms",
+    "type": "wordpress-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Philipp Nowinski",
+            "email": "mail@pno.dev"
+        }
+    ],
+    "require": {}
+}
