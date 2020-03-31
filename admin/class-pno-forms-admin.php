@@ -294,6 +294,10 @@ class Pno_Forms_Admin {
 							<input type='text' name='pno_forms_options[pno_forms_forms][<?php echo $key; ?>][sendTo]' value='<?php echo $form['sendTo'] ?>'>
 						</label>
 						<label>
+							<span>Redirect after Submit</span>
+							<input type='text' name='pno_forms_options[pno_forms_forms][<?php echo $key; ?>][redirect]' value='<?php echo $form['redirect'] ?>'>
+						</label>
+						<label>
 							<span>Template</span>
 							<select name="pno_forms_options[pno_forms_forms][<?php echo $key; ?>][template]">
 								<?php

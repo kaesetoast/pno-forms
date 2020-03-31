@@ -142,6 +142,7 @@ class Pno_Forms_Public {
 				'sent_to' => $options['pno_forms_forms'][$attributes[0]]['sendTo'],
 			]);
 			wp_mail($options['pno_forms_forms'][$attributes[0]]['sendTo'], 'Form', $mailContent);
+			wp_redirect( $options['pno_forms_forms'][$attributes[0]]['redirect'] );
 		} else {
 			$currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 			$markup .= require $options['pno_forms_forms'][$attributes[0]]['template'];
