@@ -98,7 +98,7 @@ class Pno_Forms_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->pno_forms, plugin_dir_url( __FILE__ ) . 'js/pno-forms-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->pno_forms, plugin_dir_url( __FILE__ ) . 'js/pno-forms-public.js', [], $this->version, false );
 
 	}
 
@@ -113,9 +113,20 @@ class Pno_Forms_Public {
 				}
 			}
 			$filesString = "\nfiles: ";
-			foreach ($_FILES as $file) {
+			$filesPrepared = [];
+			foreach ($_FILES['files']['name'] as $index => $file) {
+				$filesPrepared[] = [
+					'name' => $file,
+					'type' => $_FILES['files']['type'][$index],
+					'tmp_name' => $_FILES['files']['tmp_name'][$index],
+					'error' => $_FILES['files']['error'][$index],
+					'size' => $_FILES['files']['size'][$index],
+				];
+			}
+
+			foreach ($filesPrepared as $file) {
 				$uploadedFile = wp_handle_upload($file, ['test_form' => false]);
-				if ($uploadedFile && !$uploadedFile['error']) {
+				if ($uploadedFile && !isset($uploadedFile['error'])) {
 					// var_dump($uploadedFile);
 				} else {
 					// var_dump('error');
