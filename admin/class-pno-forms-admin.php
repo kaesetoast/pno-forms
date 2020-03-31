@@ -123,12 +123,16 @@ class Pno_Forms_Admin {
 
 	public function pno_forms_admin_init() {
 		register_setting('pno_forms_options', 'pno_forms_options');
+		add_settings_section('pno_forms_settings_main', 'Plugin Settings', [$this, 'pno_forms_render_main_section'], 'pno_forms_options');
+		add_settings_field('pno_forms_forms', 'Path to form template files', [$this, 'pno_forms_render_main_field_forms'], 'pno_forms_options', 'pno_forms_settings_main');
+
+		register_setting('pno_forms_options', 'pno_forms_options');
 		add_settings_section('pno_forms_settings_new_form_section', 'Create a new form', [$this, 'pno_forms_render_new_form_section'], 'pno_forms_options');
 		add_settings_field('pno_forms_forms', 'Stick the dick', [$this, 'pno_forms_render_new_form_field_forms'], 'pno_forms_options', 'pno_forms_settings_new_form_section');
 
 		register_setting('pno_forms_options', 'pno_forms_options');
-		add_settings_section('pno_forms_settings_main_section', 'Penis Section', [$this, 'pno_forms_render_existing_forms_section'], 'pno_forms_options');
-		add_settings_field('pno_forms_forms', 'Stick the dick', [$this, 'pno_forms_render_existing_forms_field_forms'], 'pno_forms_options', 'pno_forms_settings_main_section');
+		add_settings_section('pno_forms_settings_existing_forms_section', 'Manage existing Forms', [$this, 'pno_forms_render_existing_forms_section'], 'pno_forms_options');
+		add_settings_field('pno_forms_forms', 'Stick the dick', [$this, 'pno_forms_render_existing_forms_field_forms'], 'pno_forms_options', 'pno_forms_settings_existing_forms_section');
 	}
 
 	public function pno_forms_render_existing_forms_section() {
@@ -137,6 +141,17 @@ class Pno_Forms_Admin {
 
 	public function pno_forms_render_new_form_section() {
 		echo 'What dis?';
+	}
+
+	public function pno_forms_render_main_section() {
+		echo 'What dis?';
+	}
+
+	public function pno_forms_render_main_field_forms() {
+		$options = get_option('pno_forms_options');
+		?>
+		<input type='text' name='pno_forms_options[templatePath]' class='regular-text' value="<?php echo $options['templatePath'] ?>">
+		<?php
 	}
 
 	public function pno_forms_render_new_form_field_forms() {
@@ -162,6 +177,11 @@ class Pno_Forms_Admin {
 
 	public function pno_forms_render_existing_forms_field_forms() {
 		$options = get_option('pno_forms_options');
+		if ($options['templatePath'] && $options['templatePath'] !== '') {
+			$templates = scandir(get_home_path() . $options['templatePath']);
+		} else {
+			$templates = [];
+		}
 		if ($options['pno_forms_forms']) {
 			foreach ($options['pno_forms_forms'] as $key => $form) {
 				?>
@@ -187,6 +207,20 @@ class Pno_Forms_Admin {
 						<label>
 							<span>Recipient Email</span>
 							<input type='text' name='pno_forms_options[pno_forms_forms][<?php echo $key; ?>][sendTo]' value='<?php echo $form['sendTo'] ?>'>
+						</label>
+						<label>
+							<span>Template</span>
+							<select name="pno_forms_options[pno_forms_forms][<?php echo $key; ?>][template]">
+								<?php
+								foreach ($templates as $template) {
+									if ($template !== '.' && $template !== '..') {
+										?>
+										<option value="<?php echo get_home_path() . $options['templatePath'] . $template; ?>"><?php echo $template; ?></option>
+										<?php
+									}
+								}
+								?>
+							</select>
 						</label>
 						<div class="pno-well">
 							[pno_form <?php echo $key; ?>]

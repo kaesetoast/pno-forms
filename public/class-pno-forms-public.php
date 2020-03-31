@@ -1,5 +1,7 @@
 <?php
 
+require_once(ABSPATH . 'wp-admin/includes/file.php');
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -106,13 +108,26 @@ class Pno_Forms_Public {
 		if ($_POST) {
 			$mailContent = '';
 			foreach ($_POST as $key => $field) {
-				$mailContent .= $key . ": " . $field . "\n";
+				if ($key !== 'files') {
+					$mailContent .= $key . ": " . $field . "\n";
+				}
 			}
+			$filesString = "\nfiles: ";
+			foreach ($_FILES as $file) {
+				$uploadedFile = wp_handle_upload($file, ['test_form' => false]);
+				if ($uploadedFile && !$uploadedFile['error']) {
+					// var_dump($uploadedFile);
+				} else {
+					// var_dump('error');
+					// var_dump($uploadedFile['error']);
+				}
+				$filesString .= "\n\t" . $uploadedFile['url'];
+			}
+			$mailContent .= $filesString;
 			wp_mail($options['pno_forms_forms'][$attributes[0]]['sendTo'], 'Form', $mailContent);
 		} else {
-			$markup .= '<form action="" method="post">';
-			$markup .= $options['pno_forms_forms'][$attributes[0]]['html'];
-			$markup .= '</form>';
+			$currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+			$markup .= require $options['pno_forms_forms'][$attributes[0]]['template'];
 		}
 		return $markup;
 	}

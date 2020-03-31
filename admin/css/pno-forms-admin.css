@@ -26,18 +26,23 @@
   padding-right: 12px;
 }
 
-.pno-panel label {
+.pno-panel label,
+.pno-panel .label {
   display: block;
 }
 
-.pno-panel label span {
+.pno-panel label span,
+.pno-panel .label span {
   margin-bottom: 5px;
   line-height: 1.3;
   font-weight: 600;
   display: block;
 }
 
-.pno-panel label + label {
+.pno-panel label + label,
+.pno-panel .label + .label,
+.pno-panel label + .label,
+.pno-panel .label + label {
   margin-top: 12px;
 }
 
@@ -59,4 +64,11 @@
 
 .pno-panel textarea {
   width: 100%;
+}
+
+.pno-fields-editor {
+  padding: 8px;
+  border: 1px solid #ccd0d4;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  background: #f8f8f8;
 }
