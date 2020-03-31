@@ -128,11 +128,11 @@ class Pno_Forms_Admin {
 
 		register_setting('pno_forms_options', 'pno_forms_options');
 		add_settings_section('pno_forms_settings_new_form_section', 'Create a new form', [$this, 'pno_forms_render_new_form_section'], 'pno_forms_options');
-		add_settings_field('pno_forms_forms', 'Stick the dick', [$this, 'pno_forms_render_new_form_field_forms'], 'pno_forms_options', 'pno_forms_settings_new_form_section');
+		add_settings_field('pno_forms_forms', '', [$this, 'pno_forms_render_new_form_field_forms'], 'pno_forms_options', 'pno_forms_settings_new_form_section');
 
 		register_setting('pno_forms_options', 'pno_forms_options');
 		add_settings_section('pno_forms_settings_existing_forms_section', 'Manage existing Forms', [$this, 'pno_forms_render_existing_forms_section'], 'pno_forms_options');
-		add_settings_field('pno_forms_forms', 'Stick the dick', [$this, 'pno_forms_render_existing_forms_field_forms'], 'pno_forms_options', 'pno_forms_settings_existing_forms_section');
+		add_settings_field('pno_forms_forms', '', [$this, 'pno_forms_render_existing_forms_field_forms'], 'pno_forms_options', 'pno_forms_settings_existing_forms_section');
 	}
 
 	public function pno_forms_render_existing_forms_section() {

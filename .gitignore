@@ -1,3 +1,11 @@
 node_modules
 .DS_STORE
 /vendor/
+
+!node_modules/
+
+node_modules/*
+!node_modules/vue/
+
+node_modules/vue/*
+!node_modules/vue/dist/
