@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../includes/submissions.php';
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -116,8 +118,91 @@ class Pno_Forms_Admin {
 		<?php
 	}
 
+	public function pnb_forms_submissions() {
+		$db_submissions = new PNO_FORMS\form_submissions;
+		$submissions = $db_submissions->fetchAll();
+		?>
+		<h1>Form submissions</h1>
+		<div class="wrap">
+
+			<table class="wp-list-table widefat fixed striped pno-form-submissions">
+				<thead>
+					<tr>
+						<th scope="col" class="column-primary">
+							Form ID
+						</th>
+						<th scope="col">
+							Email sent to
+						</th>
+						<th scope="col">
+							Fields
+						</th>
+						<th scope="col">
+							Files
+						</th>
+						<th scope="col">
+							Date
+						</th>
+					</tr>
+				</thead>
+
+				<tbody>
+				<?php
+				foreach ($submissions as $submission) {
+				?>
+				<tr id="submission-<?php $submission->submission_id; ?>">
+					<td class="column-primary">
+						<?php echo $submission->form_id; ?>
+					</td>
+					<td>
+						<?php echo $submission->sent_to; ?>
+					</td>
+					<td>
+						<dl>
+							<?php
+								$fields = unserialize($submission->fields);
+								foreach ($fields as $key => $field) {
+									?>
+									<dt><?php echo $key; ?></dt>
+									<dd><?php echo $field; ?></dd>
+									<?php
+								}
+							?>
+						</dl>
+					</td>
+					<td>
+						<ul>
+							<?php
+								$files = unserialize($submission->files);
+								foreach ($files as $file) {
+									$urlParts = explode('/', $file['url']);
+									?>
+									<li>
+										<a href="<?php echo $file['url'] ?>" target="_blank">
+											<?php echo $urlParts[count($urlParts) - 1]; ?>
+										</a>
+									</li>
+									<?php
+								}
+							?>
+						</ul>
+					</td>
+					<td>
+						<?php echo $submission->created_at; ?>
+					</td>
+				</tr>
+				<?php
+				}
+				?>
+			</table>
+		</div>
+
+		<?php
+	}
+
 	public function pno_forms_menu() {
 		add_menu_page('PNO Forms Options', 'PNO Forms', 'manage_options', 'pno_forms_options', [$this, 'pno_forms_options']);
+		add_submenu_page('pno_forms_options', 'PNO Form Submissions', __('Submissions'), 'manage_options', 'submissions', [$this, 'pnb_forms_submissions']);
 	}
 
 

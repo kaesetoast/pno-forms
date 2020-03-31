@@ -30,7 +30,29 @@ class Pno_Forms_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
+		global $wpdb;
 
+		$charset_collate = $wpdb->get_charset_collate();
+		$version         = (int) get_site_option( 'pno_forms' );
+	
+		if ( $version < 1 ) {
+			$sql = "CREATE TABLE `{$wpdb->base_prefix}pno_forms_form_submissions` (
+			submission_id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			form_id bigint(20) UNSIGNED NOT NULL,
+			created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			sent_to varchar(255),
+			fields longtext,
+			files longtext,
+			PRIMARY KEY  (submission_id)
+			) $charset_collate;";
+	
+			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+			dbDelta( $sql );
+			$success = empty( $wpdb->last_error );
+	
+			update_site_option( 'pno_forms', 1 );
+
+		}
 	}
 
 }

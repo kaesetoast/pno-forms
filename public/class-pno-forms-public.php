@@ -1,6 +1,7 @@
 <?php
 
 require_once(ABSPATH . 'wp-admin/includes/file.php');
+require_once __DIR__ . '/../includes/submissions.php';
 
 /**
  * The public-facing functionality of the plugin.
@@ -124,17 +125,22 @@ class Pno_Forms_Public {
 				];
 			}
 
+			$uploadedFiles = [];
 			foreach ($filesPrepared as $file) {
 				$uploadedFile = wp_handle_upload($file, ['test_form' => false]);
 				if ($uploadedFile && !isset($uploadedFile['error'])) {
-					// var_dump($uploadedFile);
-				} else {
-					// var_dump('error');
-					// var_dump($uploadedFile['error']);
+					$filesString .= "\n\t" . $uploadedFile['url'];
+					$uploadedFiles[] = $uploadedFile;
 				}
-				$filesString .= "\n\t" . $uploadedFile['url'];
 			}
 			$mailContent .= $filesString;
+			$db_submissions = new PNO_FORMS\form_submissions;
+			$db_submissions->insert([
+				'form_id' => $attributes[0],
+				'fields' => serialize($_POST),
+				'files' => serialize($uploadedFiles),
+				'sent_to' => $options['pno_forms_forms'][$attributes[0]]['sendTo'],
+			]);
 			wp_mail($options['pno_forms_forms'][$attributes[0]]['sendTo'], 'Form', $mailContent);
 		} else {
 			$currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";

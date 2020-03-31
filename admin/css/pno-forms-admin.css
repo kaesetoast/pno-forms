@@ -72,3 +72,17 @@
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
   background: #f8f8f8;
 }
+
+.pno-form-submissions dl,
+.pno-form-submissions ul {
+  margin-top: 0;
+}
+
+.pno-form-submissions dt {
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.pno-form-submissions dd {
+  margin-left: 0;
+}
