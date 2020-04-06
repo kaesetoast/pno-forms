@@ -76,7 +76,7 @@ class Pno_Forms_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->pno_forms, plugin_dir_url( __FILE__ ) . 'css/pno-forms-public.css', array(), $this->version, 'all' );
+		// wp_enqueue_style( $this->pno_forms, plugin_dir_url( __FILE__ ) . 'css/pno-forms-public.css', array(), $this->version, 'all' );
 
 	}
 
