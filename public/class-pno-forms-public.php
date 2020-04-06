@@ -106,9 +106,9 @@ class Pno_Forms_Public {
 	public function pno_form_shortcode($attributes) {
 		$markup = '';
 		$options = get_option('pno_forms_options');
-		if ($_POST) {
+		if (isset($_POST['pno_forms'])) {
 			$mailContent = '';
-			foreach ($_POST as $key => $field) {
+			foreach ($_POST['pno_forms'] as $key => $field) {
 				if ($key !== 'files') {
 					$mailContent .= $key . ": " . $field . "\n";
 				}
@@ -137,7 +137,7 @@ class Pno_Forms_Public {
 			$db_submissions = new PNO_FORMS\form_submissions;
 			$db_submissions->insert([
 				'form_id' => $attributes[0],
-				'fields' => serialize($_POST),
+				'fields' => serialize($_POST['pno_forms']),
 				'files' => serialize($uploadedFiles),
 				'sent_to' => $options['pno_forms_forms'][$attributes[0]]['sendTo'],
 			]);
