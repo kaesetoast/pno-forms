@@ -99,7 +99,7 @@ class Pno_Forms_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->pno_forms, plugin_dir_url( __FILE__ ) . 'js/pno-forms-public.js', [], $this->version, false );
+		// wp_enqueue_script( $this->pno_forms, plugin_dir_url( __FILE__ ) . 'js/pno-forms-public.js', [], $this->version, false );
 
 	}
 
