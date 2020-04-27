@@ -107,42 +107,55 @@ class Pno_Forms_Public {
 		$markup = '';
 		$options = get_option('pno_forms_options');
 		if (isset($_POST['pno_forms'])) {
-			$mailContent = '';
-			foreach ($_POST['pno_forms'] as $key => $field) {
-				if ($key !== 'files') {
-					$mailContent .= $key . ": " . $field . "\n";
+			$captchaData = [
+				'secret' => '6Lf3r-kUAAAAABddT4E3NYL4S78LwgnR1NHULIFp',
+				'response' => $_POST['g-recaptcha-response']
+			];
+			$captchaConnect = curl_init();
+			curl_setopt($captchaConnect, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
+			curl_setopt($captchaConnect, CURLOPT_POST, count($captchaData));
+			curl_setopt($captchaConnect, CURLOPT_POSTFIELDS, http_build_query($captchaData));
+			curl_setopt($captchaConnect, CURLOPT_RETURNTRANSFER, true);
+			$captchaResult = curl_exec($captchaConnect);
+			curl_close($captchaConnect);
+			if (json_decode($captchaResult)->success) {
+				$mailContent = '';
+				foreach ($_POST['pno_forms'] as $key => $field) {
+					if ($key !== 'files') {
+						$mailContent .= $key . ": " . $field . "\n";
+					}
 				}
-			}
-			$filesString = "\nfiles: ";
-			$filesPrepared = [];
-			foreach ($_FILES['files']['name'] as $index => $file) {
-				$filesPrepared[] = [
-					'name' => $file,
-					'type' => $_FILES['files']['type'][$index],
-					'tmp_name' => $_FILES['files']['tmp_name'][$index],
-					'error' => $_FILES['files']['error'][$index],
-					'size' => $_FILES['files']['size'][$index],
-				];
-			}
+				$filesString = "\nfiles: ";
+				$filesPrepared = [];
+				foreach ($_FILES['files']['name'] as $index => $file) {
+					$filesPrepared[] = [
+						'name' => $file,
+						'type' => $_FILES['files']['type'][$index],
+						'tmp_name' => $_FILES['files']['tmp_name'][$index],
+						'error' => $_FILES['files']['error'][$index],
+						'size' => $_FILES['files']['size'][$index],
+					];
+				}
 
-			$uploadedFiles = [];
-			foreach ($filesPrepared as $file) {
-				$uploadedFile = wp_handle_upload($file, ['test_form' => false]);
-				if ($uploadedFile && !isset($uploadedFile['error'])) {
-					$filesString .= "\n\t" . $uploadedFile['url'];
-					$uploadedFiles[] = $uploadedFile;
+				$uploadedFiles = [];
+				foreach ($filesPrepared as $file) {
+					$uploadedFile = wp_handle_upload($file, ['test_form' => false]);
+					if ($uploadedFile && !isset($uploadedFile['error'])) {
+						$filesString .= "\n\t" . $uploadedFile['url'];
+						$uploadedFiles[] = $uploadedFile;
+					}
 				}
+				$mailContent .= $filesString;
+				$db_submissions = new PNO_FORMS\form_submissions;
+				$db_submissions->insert([
+					'form_id' => $attributes[0],
+					'fields' => serialize($_POST['pno_forms']),
+					'files' => serialize($uploadedFiles),
+					'sent_to' => $options['pno_forms_forms'][$attributes[0]]['sendTo'],
+				]);
+				wp_mail($options['pno_forms_forms'][$attributes[0]]['sendTo'], 'Form', $mailContent);
+				wp_redirect( $options['pno_forms_forms'][$attributes[0]]['redirect'] );
 			}
-			$mailContent .= $filesString;
-			$db_submissions = new PNO_FORMS\form_submissions;
-			$db_submissions->insert([
-				'form_id' => $attributes[0],
-				'fields' => serialize($_POST['pno_forms']),
-				'files' => serialize($uploadedFiles),
-				'sent_to' => $options['pno_forms_forms'][$attributes[0]]['sendTo'],
-			]);
-			wp_mail($options['pno_forms_forms'][$attributes[0]]['sendTo'], 'Form', $mailContent);
-			wp_redirect( $options['pno_forms_forms'][$attributes[0]]['redirect'] );
 		} else {
 			$currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 			$markup .= require $options['pno_forms_forms'][$attributes[0]]['template'];
